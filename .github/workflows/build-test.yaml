@@ -25,7 +25,7 @@ jobs:
           context: .
           file: Dockerfile
           push: false
-          load: true
+          load: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
           target: base
@@ -37,7 +37,7 @@ jobs:
           context: .
           file: Dockerfile
           push: false
-          load: true
+          load: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
           target: prod
@@ -49,7 +49,7 @@ jobs:
           context: .
           file: Dockerfile
           push: false
-          load: true
+          load: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
           target: test
