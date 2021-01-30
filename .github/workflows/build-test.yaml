@@ -14,7 +14,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: buildx-${{ github.sha }}
+          key: buildx-${{ hashFiles('Dockerfile') }}
           restore-keys: |
             buildx-
 
@@ -53,11 +53,3 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
           target: test
-
-      - name: Get build cache again
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: buildx-${{ github.sha }}
-          restore-keys: |
-            buildx-
