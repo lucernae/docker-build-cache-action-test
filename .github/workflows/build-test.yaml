@@ -42,8 +42,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
 
-      - name: Build base image
-        id: docker_build_base
+      - name: Build image for testing
+        id: docker_build_testing_image
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -52,7 +52,7 @@ jobs:
           load: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
-          target: base
+          target: test
 
       - name: Build prod image
         id: docker_build_prod
@@ -66,8 +66,8 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
           target: prod
 
-      - name: Build image for testing
-        id: docker_build_testing_image
+      - name: Build base image
+        id: docker_build_base
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -76,4 +76,4 @@ jobs:
           load: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
-          target: test
+          target: base
