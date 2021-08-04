@@ -1,4 +1,4 @@
-name: build-latest
+name: build-load-test-push-latest
 on:
   push:
 jobs:
