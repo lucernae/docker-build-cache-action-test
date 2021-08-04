@@ -1,0 +1,73 @@
+name: build-latest
+on:
+  push:
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Build a test image, so that we can run tests first
+      - name: Build image for testing
+        id: docker_build_testing_image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          load: true
+          cache-from: |
+            type=gha,scope=test
+            type=gha,scope=prod
+            type=gha,scope=base
+          cache-to: |
+            type=gha,scope=test
+          target: test
+      
+      # Do some preparation tests
+      - name: Test preparation
+        run: |
+          echo "Test preparation"
+      
+      # Reuse cache but now give local tag
+      - uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          load: true
+          tags: local/app:test
+          cache-from: |
+            type=gha,scope=test
+            type=gha,scope=prod
+            type=gha,scope=base
+          target: test
+      
+      # Do something with the docker test image
+      # python3 only exists in test image
+      - name: Unit Testing phase
+        run: |
+          docker run local/app:test python3 -c "print('Hello world')"
+      
+      # Reuse cache but now give local tag for production image
+      - uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          # You can also push to registry if the integration test run elsewhere
+          push: false
+          load: true
+          tags: local/app:prod
+          cache-from: |
+            type=gha,scope=prod
+            type=gha,scope=base
+          target: prod
+      
+      # Do production image deployment test, like integration test
+      - name: Integration test phase
+        run: |
+          docker run local/app:prod sh -c "which vim"
