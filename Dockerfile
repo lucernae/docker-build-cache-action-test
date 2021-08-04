@@ -1,6 +1,6 @@
 FROM alpine AS base
 
-RUN  apk add nano
+RUN  echo "Arbitrary date to trigger different build image: 2021-08-05"
 
 FROM base as prod
 
